@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ] 
   pull_request:
-    branches: [ main ]
+    branches: [ main ] 
 
 jobs:
   build-scan:
@@ -34,7 +34,7 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         with:
           args: >
-            -Dsonar.projectKey=aravindroy1_ticket-service
+            -Dsonar.projectKey=aravindroy1_Ticket-Service-A
             -Dsonar.organization=aravindroy1
             -Dsonar.qualitygate.wait=false
         env:
