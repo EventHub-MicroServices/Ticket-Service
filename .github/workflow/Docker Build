@@ -1,7 +1,7 @@
 name: Docker Build
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: 
     inputs:
       version:
         description: "Enter image version (e.g. v1.0.0)"
