@@ -31,3 +31,28 @@ jobs:
 
       - name: Push Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest
+
+      - name: Send Success Email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Deployment Successful - Ticket Service"
+          body: |
+            🎉 All stages completed successfully!
+
+            ✔ SonarCloud Passed
+            ✔ Snyk Passed
+            ✔ Docker Image Built
+            ✔ Trivy Scan Completed
+            ✔ Image Pushed to Docker Hub
+
+            Repo: ${{ github.repository }}
+            Tag: latest
+
+            Check: https://github.com/${{ github.repository }}/actions
+          to: aravindoyal2002@gmail.com
+          from: GitHub Actions
