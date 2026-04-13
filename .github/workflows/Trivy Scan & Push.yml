@@ -25,6 +25,7 @@ jobs:
           image-ref: ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest
           exit-code: 1
           severity: CRITICAL,HIGH
+          ignore-unfixed: false  
 
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
