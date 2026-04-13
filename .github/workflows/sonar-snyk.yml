@@ -50,6 +50,8 @@ jobs:
           command: test
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Force Fail (Testing)
+        run: exit 1
       
       - name: Send Email on Failure
         if: failure()
