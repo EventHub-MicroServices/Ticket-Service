@@ -23,11 +23,56 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest
-          exit-code: 0
+          exit-code: 1
           severity: CRITICAL,HIGH
+          ignore-unfixed: false  
 
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Push Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest
+      
+      - name: Send Email on Failure
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "❌ Pipeline Failed - ${{ github.workflow }}"
+          body: |
+            Pipeline: ${{ github.workflow }}
+            Repo: ${{ github.repository }}
+            Branch: ${{ github.ref_name }}
+            Status: FAILED ❌
+
+            Check logs: https://github.com/${{ github.repository }}/actions
+          to: yourteam@gmail.com
+          from: GitHub Actions
+
+      - name: Send Success Email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Deployment Successful - Ticket Service"
+          body: |
+            🎉 All stages completed successfully!
+
+            ✔ SonarCloud Passed
+            ✔ Snyk Passed
+            ✔ Docker Image Built
+            ✔ Trivy Scan Completed
+            ✔ Image Pushed to Docker Hub
+
+            Repo: ${{ github.repository }}
+            Tag: latest
+
+            Check: https://github.com/${{ github.repository }}/actions
+          to: aravindoyal2002@gmail.com
+          from: GitHub Actions
