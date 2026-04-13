@@ -5,7 +5,7 @@ on:
     inputs:
       version:
         description: "Enter image version (e.g. v1.0.0)"
-        required: true
+        required: true 
 
 jobs:
   docker:
