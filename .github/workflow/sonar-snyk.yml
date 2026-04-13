@@ -4,7 +4,7 @@ name: Code Quality Pipeline
 on:
   push:
     branches: [ main ]
-
+ 
 jobs:
   scan:
     runs-on: ubuntu-latest
