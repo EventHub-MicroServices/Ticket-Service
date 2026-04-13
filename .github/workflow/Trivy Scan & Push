@@ -1,0 +1,33 @@
+# .github/workflows/trivy-push.yml
+name: Trivy Scan & Push
+
+on:
+  workflow_run:
+    workflows: ["Docker Build"]
+    types:
+      - completed
+
+jobs:
+  scan-push:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Image Again
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest .
+
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest
+          exit-code: 0
+          severity: CRITICAL,HIGH
+
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/ticket-service:latest
