@@ -1,12 +1,12 @@
 name: Docker Build
 
 on:
-  workflow_dispatch:   
+  workflow_dispatch:
     inputs:
       version:
         description: "Enter image version (e.g. v1.0.0)"
         required: true
- 
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -14,9 +14,54 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 🔥 VERSION FORMAT CHECK
+      - name: Validate Version
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+
+          if [[ ! $VERSION =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Invalid version format ❌"
+            exit 1
+          fi
+
+      # 🔥 CHECK SONAR + SNYK STATUS
+      - name: Check Quality Gate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "Code Quality Pipeline",
+              status: "completed",
+              per_page: 1
+            });
+
+            const lastRun = runs.data.workflow_runs[0];
+
+            if (!lastRun || lastRun.conclusion !== "success") {
+              core.setFailed("❌ Sonar/Snyk not passed");
+            }
+
+      # 🔐 LOGIN BEFORE CHECKING TAG
+      - name: Docker Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # 🔥 CHECK DUPLICATE TAG
+      - name: Check Duplicate Tag
+        run: |
+          TAG=${{ github.event.inputs.version }}
+
+          if docker manifest inspect ${{ secrets.DOCKER_USERNAME }}/ticket-service:$TAG > /dev/null 2>&1; then
+            echo "Tag already exists ❌"
+            exit 1
+          fi
+
+      # 🔥 BUILD IMAGE
       - name: Build Image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/ticket-service:${{ github.event.inputs.version }} .
 
+      # 🔥 SAVE TAG
       - name: Save Tag
         run: echo "IMAGE_TAG=${{ github.event.inputs.version }}" >> $GITHUB_ENV
