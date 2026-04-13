@@ -34,7 +34,7 @@ jobs:
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ secrets.SONAR_ORG }}
             -Dsonar.sources=.
-            -Dsonar.host.url=http://13.201.58.129:9000
+            -Dsonar.host.url=http://3.110.147.156:9000
             -Dsonar.qualitygate.wait=true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
