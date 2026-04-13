@@ -54,5 +54,5 @@ jobs:
             Tag: latest
 
             Check: https://github.com/${{ github.repository }}/actions
-          to: aravindoyal2002@gmail.com
+          to: aravindroyal2002@gmail.com
           from: GitHub Actions
