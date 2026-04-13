@@ -4,10 +4,9 @@ on:
   workflow_dispatch:   
     inputs:
       version:
-        description: "Enter image version (e.g. v1.0.0)"
-        
-        required: true 
-
+      
+        description: "Enter image version (e.g. v1.0.0)" 
+        required: true
 jobs:
   docker:
     runs-on: ubuntu-latest
