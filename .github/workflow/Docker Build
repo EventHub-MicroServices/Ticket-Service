@@ -1,0 +1,22 @@
+name: Docker Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Enter image version (e.g. v1.0.0)"
+        required: true
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/ticket-service:${{ github.event.inputs.version }} .
+
+      - name: Save Tag
+        run: echo "IMAGE_TAG=${{ github.event.inputs.version }}" >> $GITHUB_ENV
