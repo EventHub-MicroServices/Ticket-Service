@@ -4,7 +4,7 @@ name: Trivy Scan & Push
 on:
   workflow_run:
     workflows: ["Docker Build"]
-    types:
+    types: 
       - completed
 
 jobs:
