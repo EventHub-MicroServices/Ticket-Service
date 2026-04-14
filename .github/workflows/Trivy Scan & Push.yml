@@ -1,4 +1,4 @@
-# .github/workflows/trivy-push.yml
+
 name: Trivy Scan & Push
 
 on:
@@ -40,9 +40,9 @@ jobs:
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "✅ Deployment Successful - Ticket Service"
+          subject: " Deployment Successful - Ticket Service"
           body: |
-            🎉 All stages completed successfully!
+             All stages completed successfully!
 
             ✔ SonarCloud Passed
             ✔ Snyk Passed
