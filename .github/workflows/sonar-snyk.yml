@@ -1,4 +1,4 @@
-# .github/workflows/sonar-snyk.yml
+
 name: Code Quality Pipeline
 
 on:
@@ -13,9 +13,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # -------------------------------
-      # PYTHON SETUP ✅
-      # -------------------------------
+  
+      # PYTHON SETUP 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -24,9 +23,7 @@ jobs:
       - name: Install Dependencies
         run: pip install -r requirements.txt
 
-      # -------------------------------
-      # SONAR (BLOCKING)
-      # -------------------------------
+      # SONAR 
       - name: Sonar Scan
         uses: SonarSource/sonarqube-scan-action@v7
         with:
@@ -39,9 +36,8 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      # -------------------------------
-      # SNYK (PYTHON) ✅
-      # -------------------------------
+      
+      # SNYK (PYTHON) 
       - name: Snyk Scan
         uses: snyk/actions/python@master
         with:
